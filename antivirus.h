@@ -7,6 +7,8 @@
    antivirus-related logic.
 */
 
+#include <string.h>
+
 #define SIZE 100
 #define SLASH "/"
 #define TWENTY_PERCENT 0.2
@@ -36,7 +38,6 @@ char *getSignature(char *sigPath);
 void scanFiles(char *sig, char *dirPath);
 int scanFile(char *currentFilePath, char *sig, int mode);
 int findSignature(char *file, char *sig, int fileSize, int start, int end);
-void cleanBuffer(char *buff, int size);
 
 int sigSize = 0;
 int results = 0;
@@ -282,7 +283,7 @@ int scanFile(char *currentFilePath, char *sig, int mode)
 
     for (i; i < THREE && !found; i++)
     {
-        cleanBuffer(buff, fileSize);        // restting the buffer
+        memset(buff, 0, fileSize);
         fread(buff, 1, fileSize, currFile); // and reading the first byte
         fseek(currFile, 0, SEEK_SET);
 
@@ -349,23 +350,6 @@ int findSignature(char *file, char *sig, int fileSize, int start, int end)
     }
 
     return count == sigSize ? 1 : 0;
-}
-
-/*
-A function to clear a buffer(fill with NULL's)
-    input: 
-            buff - a buffer to be cleared
-            size - the amount of bytes to reset to NULL
-    output: none
-*/
-void cleanBuffer(char *buff, int size)
-{
-    int i = 0;
-
-    for (i = 0; i < size; i++)
-    {
-        buff[i] = 0;
-    }
 }
 
 #endif
